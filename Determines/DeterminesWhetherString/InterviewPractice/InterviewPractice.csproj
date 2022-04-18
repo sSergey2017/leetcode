@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="10_QueueO.cs~RFe76f064.TMP" />
+  </ItemGroup>
+
 </Project>
