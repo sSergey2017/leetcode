@@ -20,5 +20,16 @@ namespace ServerTest1.Controllers
                 new User("II", "PP", "hh1")
             };
         }
+
+        public async Task<User[]> IndexAsync()
+        {
+            await Task.Delay(50);
+            return new[]
+            {
+                new User("II", "PP", "hhAAA"),
+                new User("II", "PP", "hh2AA"),
+                new User("II", "PP", "hh1SSSS")
+            };
+        }
     }
 }

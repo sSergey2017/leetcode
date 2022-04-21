@@ -7,7 +7,9 @@ using Server.ItSelf;
 
 // ServerHost server = new ServerHost(new StaticFileHandler(Path.Combine(Environment.CurrentDirectory, "www")));
 ServerHost host = new ServerHost(new ControllerHandler(typeof(Program).Assembly));
-host.Start();
+ await host.StartAsync();
+// host.StartV2();
+
 
 //TcpListener listener = new TcpListener(IPAddress.Any, 80);
 //listener.Start();

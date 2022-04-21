@@ -56,6 +56,11 @@ namespace Server.ItSelf
             {
                 return "/" + name;
             }
+            //if (method.Name.Equals("IndexAsync", StringComparison.InvariantCultureIgnoreCase))
+            //{
+            //    return "/" + name;
+            //}
+
             return "/" + name + "/" + method.Name;
         }
 
@@ -67,6 +72,39 @@ namespace Server.ItSelf
             {
                 ResponseWriter.WriteStatus(System.Net.HttpStatusCode.OK, stream);
                 WriteControllerReponse(func(), stream);
+            }
+        }
+
+        public async Task HandleAsync(Stream stream, Request request)
+        {
+            if (!_routes.TryGetValue(request.Path, out var func))
+                await ResponseWriter.WriteStatusAsync(System.Net.HttpStatusCode.NotFound, stream);
+            else
+            {
+                await ResponseWriter.WriteStatusAsync(System.Net.HttpStatusCode.OK, stream);
+                await WriteControllerReponseAsync(func(), stream);
+            }
+        }
+
+        private async Task WriteControllerReponseAsync(object response, Stream stream)
+        {
+            if (response is string str)
+            {
+                using var writer = new StreamWriter(stream, leaveOpen: true);
+                writer.Write(str);
+            }
+            else if (response is byte[] buffer)
+            {
+                stream.Write(buffer, 0, buffer.Length);
+            }
+            else if (response is Task task)
+            {
+                await task;
+                await WriteControllerReponseAsync(task.GetType().GetProperty("Result").GetValue(task), stream);
+            }
+            else
+            {
+                await WriteControllerReponseAsync(JsonConvert.SerializeObject(response), stream);
             }
         }
 
